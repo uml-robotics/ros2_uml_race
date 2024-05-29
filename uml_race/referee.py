@@ -34,7 +34,7 @@ class Referee(Node):
         if not self.started and msg.linear.x != 0:
             self.start_time = self.get_clock().now()
             self.started = True
-            print( "Start moving at %s" % self.toS(self.start_time.nanoseconds))
+            self.get_logger().info('Start moving at  %s' % self.toS(self.start_time.nanoseconds))
 
     def distance(self,x0, y0, x1, y1):
         dx = x1 - x0
@@ -42,7 +42,7 @@ class Referee(Node):
         return sqrt(dx*dx + dy*dy)
 
     def quit(self,reason):
-        print(reason)
+        self.get_logger().info(reason)
         rclpy.shutdown()
 
     def toS(self,t):
@@ -52,7 +52,9 @@ class Referee(Node):
 def main(args=None):
     rclpy.init(args=args)
     referee = Referee()
+    
     rclpy.spin(referee)
+    
     referee.destroy_node()
     rclpy.shutdown()
 
