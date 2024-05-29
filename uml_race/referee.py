@@ -24,7 +24,7 @@ class Referee(Node):
         d = self.distance(msg.pose.pose.position.x, msg.pose.pose.position.y, 
                  self.goal_x, self.goal_y)
         if self.start_time != None and d < self.goal_e:
-            duration = this.get_clock().now() - self.start_time
+            duration = self.get_clock().now() - self.start_time
             self.quit("Finished in %fs" % self.toS(duration))
 
     def got_cmd_vel(self, msg):
@@ -33,7 +33,7 @@ class Referee(Node):
         if msg.linear.x > self.max_speed:
             self.quit("Error: speed limit exceeded")
         if self.start_time == None and msg.linear.x != 0:
-            self.start_time = this.get_clock().now()
+            self.start_time = self.get_clock().now()
             print( "Start moving at %s" % self.toS(self.start_time))
 
     def distance(self,x0, y0, x1, y1):
