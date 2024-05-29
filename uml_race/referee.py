@@ -2,12 +2,6 @@
 import rclpy
 from rclpy.node import Node
 
-max_speed = 5.0
-
-goal_x = -25.0
-goal_y = -14.0
-goal_e =   2.0
-
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from math import sqrt
@@ -30,20 +24,24 @@ class Referee(Node):
         super().__init__('Referee')
         self.command_watcher = self.create_subscription(Twist, 'cmd_vel', self.got_cmd_vel,10)
         self.odom_watcher = self.create_subscription(Odometry, 'base_pose_ground_truth', self.got_odom,10)
+        self.max_speed = 5.0
+        self.goal_x = -25.0
+        self.goal_y = -14.0
+        self.goal_e = 2.0
 
     def got_odom(self,msg):
         d = distance(msg.pose.pose.position.x, msg.pose.pose.position.y, 
-                 goal_x, goal_y)
-        if start_time != None and d < goal_e:
+                 self.goal_x, self.goal_y)
+        if self.start_time != None and d < self.goal_e:
             duration = this.get_clock().now() - self.start_time
             quit("Finished in %fs" % toS(duration))
 
     def got_cmd_vel(self, msg):
         if msg.linear.y > 0 or msg.linear.z > 0:
             quit("Error: Move in bad direction")
-        if msg.linear.x > max_speed:
+        if msg.linear.x > self.max_speed:
             quit("Error: speed limit exceeded")
-        if start_time == None and msg.linear.x != 0:
+        if self.start_time == None and msg.linear.x != 0:
             self.start_time = this.get_clock().now()
             print( "Start moving at %s" % toS(self.start_time))
         
