@@ -7,8 +7,6 @@ from nav_msgs.msg import Odometry
 from math import sqrt
 
 
-
-
 class Referee(Node):
     def __init__(self):
         super().__init__('Referee')
@@ -18,23 +16,25 @@ class Referee(Node):
         self.goal_x = -25.0
         self.goal_y = -14.0
         self.goal_e = 2.0
-        self.start_time = None
+        self.start_time = self.get_clock().now()
+        self.started = False
 
     def got_odom(self, msg):
         d = self.distance(msg.pose.pose.position.x, msg.pose.pose.position.y, 
                  self.goal_x, self.goal_y)
-        if self.start_time != None and d < self.goal_e:
-            duration = self.get_clock().now() - self.start_time
-            self.quit("Finished in %fs" % duration.seconds())
+        if self.started and d < self.goal_e:
+            duration = self.get_clock().now().nanoseconds - self.start_time.nanoseconds
+            self.quit("Finished in %fs" % self.toS(duration))
 
     def got_cmd_vel(self, msg):
         if msg.linear.y > 0 or msg.linear.z > 0:
             self.quit("Error: Move in bad direction")
         if msg.linear.x > self.max_speed:
             self.quit("Error: speed limit exceeded")
-        if self.start_time == None and msg.linear.x != 0:
+        if self.started and msg.linear.x != 0:
             self.start_time = self.get_clock().now()
-            print( "Start moving at %s" % self.start_time.seconds())
+            self.started = True
+            print( "Start moving at %s" % self.toS(self.start_time.nanoseconds))
 
     def distance(self,x0, y0, x1, y1):
         dx = x1 - x0
@@ -46,7 +46,7 @@ class Referee(Node):
         rclpy.shutdown()
 
     def toS(self,t):
-        return float(t.secs)+float(t.nsecs) / 1000000000.0
+        return t / 1000000000.0
         
 
 def main(args=None):
