@@ -5,7 +5,6 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from math import sqrt
-import os
 
 def toS(t):
     return float(t.secs)+float(t.nsecs) / 1000000000.0
