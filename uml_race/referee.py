@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
 
@@ -7,8 +7,6 @@ max_speed = 5.0
 goal_x = -25.0
 goal_y = -14.0
 goal_e =   2.0
-
-start_time = None
 
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
@@ -20,7 +18,7 @@ def toS(t):
 
 def quit(reason):
     print(reason)
-    rospy.signal_shutdown(reason)
+    rclpy.shutdown()
 
 def distance(x0, y0, x1, y1):
     dx = x1 - x0
@@ -37,7 +35,7 @@ class Referee(Node):
         d = distance(msg.pose.pose.position.x, msg.pose.pose.position.y, 
                  goal_x, goal_y)
         if start_time != None and d < goal_e:
-            duration = rospy.Time.now() - self.start_time
+            duration = this.get_clock().now() - self.start_time
             quit("Finished in %fs" % toS(duration))
 
     def got_cmd_vel(self, msg):
@@ -46,7 +44,7 @@ class Referee(Node):
         if msg.linear.x > max_speed:
             quit("Error: speed limit exceeded")
         if start_time == None and msg.linear.x != 0:
-            self.start_time = rospy.Time.now()
+            self.start_time = this.get_clock().now()
             print( "Start moving at %s" % toS(self.start_time))
         
 
@@ -62,7 +60,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
-
-
-rospy.spin()
