@@ -18,6 +18,7 @@ class Referee(Node):
         self.goal_x = -25.0
         self.goal_y = -14.0
         self.goal_e = 2.0
+        self.start_time = None
 
     def got_odom(self, msg):
         d = self.distance(msg.pose.pose.position.x, msg.pose.pose.position.y, 
