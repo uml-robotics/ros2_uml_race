@@ -31,7 +31,7 @@ class Referee(Node):
             self.quit("Error: Move in bad direction")
         if msg.linear.x > self.max_speed:
             self.quit("Error: speed limit exceeded")
-        if self.started and msg.linear.x != 0:
+        if not self.started and msg.linear.x != 0:
             self.start_time = self.get_clock().now()
             self.started = True
             print( "Start moving at %s" % self.toS(self.start_time.nanoseconds))
