@@ -35,16 +35,16 @@ class Referee(Node):
             self.start_time = this.get_clock().now()
             print( "Start moving at %s" % self.toS(self.start_time))
 
-    def distance(x0, y0, x1, y1):
+    def distance(self,x0, y0, x1, y1):
         dx = x1 - x0
         dy = y1 - y0
         return sqrt(dx*dx + dy*dy)
 
-    def quit(reason):
+    def quit(self,reason):
         print(reason)
         rclpy.shutdown()
 
-    def toS(t):
+    def toS(self,t):
         return float(t.secs)+float(t.nsecs) / 1000000000.0
         
 
